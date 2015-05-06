@@ -5,48 +5,79 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <style>
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0;}
+      .map { height: 100% }
+    </style>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="https://raw.githubusercontent.com/leaflet-extras/leaflet-providers/1.0.29/leaflet-providers.js"></script>
   </head>
   <body>
-    <div id="map" style="width: maxwidth; height: 500px"></div>
+    <div id="map" class="map"></div>
 
     <script>
       var map = L.map('map');
 
-      // create the tile layer with correct attribution
-      //    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      var osmUrl='http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
-      var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-      var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
-
+      var defaultLayer = L.tileLayer.provider('OpenStreetMap.Mapnik').addTo(map);
+      var baseLayers = {
+        'OpenStreetMap Default': defaultLayer,
+        'OpenStreetMap German Style': L.tileLayer.provider('OpenStreetMap.DE'),
+        'OpenStreetMap Black and White': L.tileLayer.provider('OpenStreetMap.BlackAndWhite'),
+        'OpenStreetMap H.O.T.': L.tileLayer.provider('OpenStreetMap.HOT'),
+        'Thunderforest OpenCycleMap': L.tileLayer.provider('Thunderforest.OpenCycleMap'),
+        'Thunderforest Transport': L.tileLayer.provider('Thunderforest.Transport'),
+        'Thunderforest Landscape': L.tileLayer.provider('Thunderforest.Landscape'),
+        'Hydda Full': L.tileLayer.provider('Hydda.Full'),
+        'MapQuest OSM': L.tileLayer.provider('MapQuestOpen.OSM'),
+        'MapQuest Aerial': L.tileLayer.provider('MapQuestOpen.Aerial'),
+        'MapBox Example': L.tileLayer.provider('MapBox.examples.map-zr0njcqy'),
+        'Stamen Toner': L.tileLayer.provider('Stamen.Toner'),
+        'Stamen Terrain': L.tileLayer.provider('Stamen.Terrain'),
+        'Stamen Watercolor': L.tileLayer.provider('Stamen.Watercolor'),
+      };
+      var overlayLayers = {
+      };
+      var layerControl = L.control.layers(baseLayers, overlayLayers, {collapsed: false}).addTo(map);
+      // resize layers control to fit into view.
+      function resizeLayerControl() {
+        var layerControlHeight = document.body.clientHeight - (10 + 50);
+        var layerControl = document.getElementsByClassName('leaflet-control-layers-expanded')[0];
+        layerControl.style.overflowY = 'auto';
+        layerControl.style.maxHeight = layerControlHeight + 'px';
+      }
+      map.on('resize', resizeLayerControl);
+      resizeLayerControl();
       // start the map in South-East England
       map.setView(new L.LatLng(51.3, 0.7),9);
-      map.addLayer(osm);
 
-      osm.on('tileload', function(e) {
-        //    console.log(e.tile.outerHTML); // e is an event object (MouseEvent in this case)
-        var tile = e.tile;
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', e.url + "/status", true);
-        xhr.onload = function(e) {
-          if (this.status == 200) {
-            var re = /Last rendered at (.*?)\./;
-            var m;
+      for (var layer in baseLayers) {
+        if (baseLayers.hasOwnProperty(layer)) {
+          baseLayers[layer].on('tileload', function(e) {
+            //    console.log(e.tile.outerHTML); // e is an event object (MouseEvent in this case)
+            var tile = e.tile;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', e.url + "/status", true);
+            xhr.onload = function(e) {
+              if (this.status == 200) {
+                var re = /Last rendered at (\S+ \S+ \d+ \d+:\d+:\d+ \d+)/;
+                var m;
 
-            console.log(this.responseText);
-            if ((m = re.exec(this.responseText)) !== null) {
-              var date = m[1];
-              re = /<img src=".*?" (.*)>/;
-              if ((m = re.exec(tile.outerHTML)) !== null) {
-                var span= "<span "+ m[1] + ">" + date + "</span>";
-                tile.outerHTML += span;
+                console.log(this.responseText);
+                if ((m = re.exec(this.responseText)) !== null) {
+                  var date = m[1];
+                  re = /<img src=".*?" (.*)>/;
+                  if ((m = re.exec(tile.outerHTML)) !== null) {
+                    var span= "<span "+ m[1] + ">" + date + "</span>";
+                    tile.outerHTML += span;
+                  }
+                }
               }
-            }
-          }
+            };
+            xhr.send();
+          });
         };
-        xhr.send();
-      });
-
+      };
     </script>
   </body>
 </html>
