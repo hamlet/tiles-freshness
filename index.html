@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tiles freshness</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  </head>
+  <body>
+    <div id="map" style="width: maxwidth; height: 500px"></div>
+
+    <script>
+      var map = L.map('map');
+
+      // create the tile layer with correct attribution
+      //    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      var osmUrl='http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
+      var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+      var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});
+
+      // start the map in South-East England
+      map.setView(new L.LatLng(51.3, 0.7),9);
+      map.addLayer(osm);
+
+      osm.on('tileload', function(e) {
+        //    console.log(e.tile.outerHTML); // e is an event object (MouseEvent in this case)
+        var tile = e.tile;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', e.url + "/status", true);
+        xhr.onload = function(e) {
+          if (this.status == 200) {
+            var re = /Last rendered at (.*?)\./;
+            var m;
+
+            console.log(this.responseText);
+            if ((m = re.exec(this.responseText)) !== null) {
+              var date = m[1];
+              re = /<img src=".*?" (.*)>/;
+              if ((m = re.exec(tile.outerHTML)) !== null) {
+                var span= "<span "+ m[1] + ">" + date + "</span>";
+                tile.outerHTML += span;
+              }
+            }
+          }
+        };
+        xhr.send();
+      });
+
+    </script>
+  </body>
+</html>
+
