@@ -11,6 +11,8 @@
       .map { height: 100% }
     </style>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <link rel="stylesheet" href="lib/leaflet-control-geocoder/Control.Geocoder.css" />
+    <script src="lib/leaflet-control-geocoder/Control.Geocoder.js"></script>
     <script src="leaflet-providers.js"></script>
     <script src="leaflet-geoip.js"></script>
     <script src="Bing.js"></script>
@@ -48,7 +50,6 @@
       resizeLayerControl();
       // start the map in South-East England
       //map.setView(new L.LatLng(51.3, 0.7),9);
-      map.setView(L.GeoIP.getPosition(),10);
 
       function display_fresh_date(tile, fresh_date) {
         var m;
@@ -98,6 +99,10 @@
           });
         };
       };
+
+
+      map.setView(L.GeoIP.getPosition(),10);
+      L.Control.geocoder().addTo(map);
     </script>
   </body>
 </html>
