@@ -1,0 +1,3 @@
+[submodule "lib/leaflet-control-geocoder"]
+	path = lib/leaflet-control-geocoder
+	url = https://github.com/perliedman/leaflet-control-geocoder.git
