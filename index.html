@@ -11,7 +11,7 @@
       .map { height: 100% }
     </style>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <script src="https://raw.githubusercontent.com/leaflet-extras/leaflet-providers/1.0.29/leaflet-providers.js"></script>
+    <script src="leaflet-providers.js"></script>
     <script src="Bing.js"></script>
   </head>
   <body>
@@ -52,7 +52,7 @@
         var m;
         var re = /<img src=".*?" (.*)>/;
         if ((m = re.exec(tile.outerHTML)) !== null) {
-          var span= "<span "+ m[1] + ">" + fresh_date + "</span>";
+          var span= "<p "+ m[1] + '><span style="background-color: white">' + fresh_date + "</span></p>";
           tile.outerHTML += span;
         };
       }
@@ -69,9 +69,10 @@
               req.open('GET', e.url, false);
               req.send(null);
               var headers = req.getAllResponseHeaders();
+                  console.log(headers);
+
               var re = /Last-Modified: (.*?)\r/;
               var m;
-
               if ((m = re.exec(headers)) !== null) {
                 display_fresh_date(tile, m[1]);
               }
