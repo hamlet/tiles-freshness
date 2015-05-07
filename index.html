@@ -12,6 +12,7 @@
     </style>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="leaflet-providers.js"></script>
+    <script src="leaflet-geoip.js"></script>
     <script src="Bing.js"></script>
   </head>
   <body>
@@ -46,7 +47,8 @@
       map.on('resize', resizeLayerControl);
       resizeLayerControl();
       // start the map in South-East England
-      map.setView(new L.LatLng(51.3, 0.7),9);
+      //map.setView(new L.LatLng(51.3, 0.7),9);
+      map.setView(L.GeoIP.getPosition(),10);
 
       function display_fresh_date(tile, fresh_date) {
         var m;
