@@ -24,7 +24,7 @@
       var map = L.map('map');
 
       var baseLayers = {
-        'Bing': new L.bingLayer("AuplXNWfv2r8wBiiFxD76a0vHWy6MEi3xARtk9oTiP-fC7LsEqEl5vE6qpjXiR2l"),
+        'Bing': new L.bingLayer("AuplXNWfv2r8wBiiFxD76a0vHWy6MEi3xARtk9oTiP-fC7LsEqEl5vE6qpjXiR2l", {maxZoom: 20}),
         'OpenStreetMap Default': L.tileLayer.provider('OpenStreetMap.Mapnik'),
         'OpenStreetMap German Style': L.tileLayer.provider('OpenStreetMap.DE'),
         'OpenStreetMap French Style': L.tileLayer.provider('OpenStreetMap.France'),
@@ -68,17 +68,25 @@
             var tile = e.tile;
             var fresh_date;
             if (/virtualearth/.exec(e.url)) {
-              var req = new XMLHttpRequest();
-              req.open('GET', e.url, false);
-              req.send(null);
-              var headers = req.getAllResponseHeaders();
-                  console.log(headers);
-
-              var re = /Last-Modified: (.*?)\r/;
-              var m;
-              if ((m = re.exec(headers)) !== null) {
-                display_fresh_date(tile, m[1]);
+              var xhr = new XMLHttpRequest();
+              xhr.open('GET', e.url, true);
+              //xhr.setRequestHeader('Cache-Control', 'no-cache');
+              xhr.send();
+                  
+              xhr.onreadystatechange = function() {
+                if(this.readyState >= this.HEADERS_RECEIVED) {
+                    
+              var header = this.getAllResponseHeaders();//("X-VE-TILEMETA-CaptureDatesRange");
+                  console.log(header);
+                  display_fresh_date(tile, header);
+                }
               }
+
+              //var re = /: (.*?)\r/;
+              //var m;
+              //if ((m = re.exec(headers)) !== null) {
+              //  display_fresh_date(tile, m[1]);
+              //}
             }
             else {
               var xhr = new XMLHttpRequest();
