@@ -7,3 +7,6 @@
 [submodule "lib/leaflet-geoip"]
 	path = lib/leaflet-geoip
 	url = https://github.com/jakubdostal/leaflet-geoip
+[submodule "lib/leaflet-providers"]
+	path = lib/leaflet-providers
+	url = https://github.com/leaflet-extras/leaflet-providers.git
