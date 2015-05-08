@@ -13,6 +13,7 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <link rel="stylesheet" href="lib/leaflet-control-geocoder/Control.Geocoder.css" />
     <script src="lib/leaflet-control-geocoder/Control.Geocoder.js"></script>
+    <script src="lib/leaflet-hash/leaflet-hash.js"></script>
     <script src="leaflet-providers.js"></script>
     <script src="leaflet-geoip.js"></script>
     <script src="Bing.js"></script>
@@ -22,6 +23,7 @@
 
     <script>
       var map = L.map('map');
+      var hash = new L.Hash(map);
 
       var baseLayers = {
         'Bing': new L.bingLayer("AuplXNWfv2r8wBiiFxD76a0vHWy6MEi3xARtk9oTiP-fC7LsEqEl5vE6qpjXiR2l", {maxZoom: 20}),

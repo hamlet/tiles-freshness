@@ -1,4 +1,6 @@
 <?php
+// Source (partial) : https://github.com/mvexel/bingimageanalyzer/blob/master/tile.php
+
 $url = urldecode($_GET['url']);
 print("url: ". $url."\n");
 $ch = curl_init();

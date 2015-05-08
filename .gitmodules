@@ -1,3 +1,6 @@
 [submodule "lib/leaflet-control-geocoder"]
 	path = lib/leaflet-control-geocoder
 	url = https://github.com/perliedman/leaflet-control-geocoder.git
+[submodule "lib/leaflet-hash"]
+	path = lib/leaflet-hash
+	url = https://github.com/mlevans/leaflet-hash.git
