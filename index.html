@@ -51,55 +51,51 @@
       // start the map in South-East England
       //map.setView(new L.LatLng(51.3, 0.7),9);
 
-      function display_fresh_date(tile, fresh_date) {
-        var m;
-        var re = /<img src=".*?" (.*)>/;
+      function display_date(tile, fresh_date) {
+        re = /<img src=".*?" (.*)>/;
         if ((m = re.exec(tile.outerHTML)) !== null) {
           var span= "<p "+ m[1] + '><span style="background-color: white">' + fresh_date + "</span></p>";
           tile.outerHTML += span;
         };
       }
 
+      var dates_cache = {};
+      function request_and_parse(tile, url, re) {
+        if (dates_cache[url] !== undefined) {
+          console.log("cache " + url); 
+          display_date(tile, dates_cache[url]);
+        }
+        else {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', url, true);
+          xhr.send();
+          xhr.onload = function(e) {
+            if (this.status == 200) {
+              // console.log(response.responseText);
+              var m;
+              if ((m = re.exec(this.responseText)) !== null) {
+                // console.log(m[1]);
+                if (dates_cache[url] == undefined) {
+                  console.log("cached "  + url); 
+                  dates_cache[url] = m[1];
+                }
+                display_date(tile, m[1]);
+              }
+            }
+          }
+        }
+      }
+
       for (var layer in baseLayers) {
         if (baseLayers.hasOwnProperty(layer)) {
           baseLayers[layer].on('tileload', function(e) {
             //    console.log(e.tile.outerHTML); // e is an event object (MouseEvent in this case)
-            console.log(e.url); // e is an event object (MouseEvent in this case)
-            var tile = e.tile;
-            var fresh_date;
+            console.log("new " + e.url); 
             if (/virtualearth/.exec(e.url)) {
-              var xhr = new XMLHttpRequest();
-              xhr.open('GET', "http://ssh.mlet.me/tile-freshness/headers.php?url=" + e.url, true);
-              //xhr.setRequestHeader('X-VE-TILEMETA-CaptureDatesRange', '');
-              xhr.send();
-              xhr.onload = function(e) {
-                if (this.status == 200) {
-
-                  var m;
-                  var re = /X-VE-TILEMETA-CaptureDatesRange: (\S+)\r/ ;
-                  if ((m = re.exec(this.responseText)) !== null) {
-                  console.log(m[1]);
-                    display_fresh_date(tile, m[1]);
-                  }
-                }
-              }
-                  
+              request_and_parse(e.tile, "http://ssh.mlet.me/tile-freshness/headers.php?url=" + e.url, /X-VE-TILEMETA-CaptureDatesRange: (\S+)\r/);
             }
             else {
-              var xhr = new XMLHttpRequest();
-              xhr.open('GET', e.url + "/status", true);
-              xhr.onload = function(e) {
-                if (this.status == 200) {
-                  console.log(this.responseText);
-
-                  var m;
-                  var re = /Last rendered at (\S+ \S+ \d+ \d+:\d+:\d+ \d+)/ ;
-                  if ((m = re.exec(this.responseText)) !== null) {
-                    display_fresh_date(tile, m[1]);
-                  }
-                }
-              }
-              xhr.send();
+              request_and_parse(e.tile, e.url + "/status", /Last rendered at (\S+ \S+ \d+ \d+:\d+:\d+ \d+)/);
             }
           });
         };
