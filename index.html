@@ -62,7 +62,6 @@
       var dates_cache = {};
       function request_and_parse(tile, url, re) {
         if (dates_cache[url] !== undefined) {
-          console.log("cache " + url); 
           display_date(tile, dates_cache[url]);
         }
         else {
@@ -71,12 +70,9 @@
           xhr.send();
           xhr.onload = function(e) {
             if (this.status == 200) {
-              // console.log(response.responseText);
               var m;
               if ((m = re.exec(this.responseText)) !== null) {
-                // console.log(m[1]);
                 if (dates_cache[url] == undefined) {
-                  console.log("cached "  + url); 
                   dates_cache[url] = m[1];
                 }
                 display_date(tile, m[1]);
