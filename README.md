@@ -1,4 +1,6 @@
-# tiles-freshness
+# Tiles Freshness
+
+Leaflet app (soon plugin I hope), to check the age of tiles.
 
 ## OSM
 
