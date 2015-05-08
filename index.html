@@ -14,9 +14,9 @@
     <link rel="stylesheet" href="lib/leaflet-control-geocoder/Control.Geocoder.css" />
     <script src="lib/leaflet-control-geocoder/Control.Geocoder.js"></script>
     <script src="lib/leaflet-hash/leaflet-hash.js"></script>
-    <script src="leaflet-providers.js"></script>
-    <script src="leaflet-geoip.js"></script>
-    <script src="Bing.js"></script>
+    <script src="lib/leaflet-providers.js"></script>
+    <script src="lib/leaflet-geoip.js"></script>
+    <script src="lib/Bing.js"></script>
   </head>
   <body>
     <div id="map" class="map"></div>
@@ -28,8 +28,8 @@
       var baseLayers = {
         'Bing': new L.bingLayer("AuplXNWfv2r8wBiiFxD76a0vHWy6MEi3xARtk9oTiP-fC7LsEqEl5vE6qpjXiR2l", {maxZoom: 20}),
         'OpenStreetMap Default': L.tileLayer.provider('OpenStreetMap.Mapnik'),
-        'OpenStreetMap German Style': L.tileLayer.provider('OpenStreetMap.DE'),
         'OpenStreetMap French Style': L.tileLayer.provider('OpenStreetMap.France'),
+        'OpenStreetMap German Style': L.tileLayer.provider('OpenStreetMap.DE'),
         'OpenStreetMap H.O.T.': L.tileLayer.provider('OpenStreetMap.HOT'),
         // CORS   'OpenStreetMap BlackAndWhite': L.tileLayer.provider('OpenStreetMap.BlackAndWhite'),
         // CORS   'OpenTopoMap': L.tileLayer.provider('OpenTopoMap'),
@@ -37,7 +37,7 @@
         'Thunderforest Landscape': L.tileLayer.provider('Thunderforest.Landscape'),
         // CORS   'Hydda Full': L.tileLayer.provider('Hydda.Full'),
       };
-      baseLayers['Bing'].addTo(map);
+      baseLayers['OpenStreetMap H.O.T.'].addTo(map);
       var overlayLayers = {
       };
       var layerControl = L.control.layers(baseLayers, overlayLayers, {collapsed: false}).addTo(map);
@@ -88,7 +88,7 @@
         if (baseLayers.hasOwnProperty(layer)) {
           baseLayers[layer].on('tileload', function(e) {
             //    console.log(e.tile.outerHTML); // e is an event object (MouseEvent in this case)
-            console.log("new " + e.url); 
+            // console.log("new " + e.url); 
             if (/virtualearth/.exec(e.url)) {
               request_and_parse(e.tile, "http://ssh.mlet.me/tile-freshness/headers.php?url=" + e.url, /X-VE-TILEMETA-CaptureDatesRange: (\S+)\r/);
             }
