@@ -69,24 +69,21 @@
             var fresh_date;
             if (/virtualearth/.exec(e.url)) {
               var xhr = new XMLHttpRequest();
-              xhr.open('GET', e.url, true);
-              //xhr.setRequestHeader('Cache-Control', 'no-cache');
+              xhr.open('GET', "http://ssh.mlet.me/tile-freshness/headers.php?url=" + e.url, true);
+              //xhr.setRequestHeader('X-VE-TILEMETA-CaptureDatesRange', '');
               xhr.send();
-                  
-              xhr.onreadystatechange = function() {
-                if(this.readyState >= this.HEADERS_RECEIVED) {
-                    
-              var header = this.getAllResponseHeaders();//("X-VE-TILEMETA-CaptureDatesRange");
-                  console.log(header);
-                  display_fresh_date(tile, header);
+              xhr.onload = function(e) {
+                if (this.status == 200) {
+
+                  var m;
+                  var re = /X-VE-TILEMETA-CaptureDatesRange: (\S+)\r/ ;
+                  if ((m = re.exec(this.responseText)) !== null) {
+                  console.log(m[1]);
+                    display_fresh_date(tile, m[1]);
+                  }
                 }
               }
-
-              //var re = /: (.*?)\r/;
-              //var m;
-              //if ((m = re.exec(headers)) !== null) {
-              //  display_fresh_date(tile, m[1]);
-              //}
+                  
             }
             else {
               var xhr = new XMLHttpRequest();
