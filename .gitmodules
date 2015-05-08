@@ -4,3 +4,6 @@
 [submodule "lib/leaflet-hash"]
 	path = lib/leaflet-hash
 	url = https://github.com/mlevans/leaflet-hash.git
+[submodule "lib/leaflet-geoip"]
+	path = lib/leaflet-geoip
+	url = https://github.com/jakubdostal/leaflet-geoip
