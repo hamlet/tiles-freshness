@@ -10,3 +10,6 @@
 [submodule "lib/leaflet-providers"]
 	path = lib/leaflet-providers
 	url = https://github.com/leaflet-extras/leaflet-providers.git
+[submodule "lib/Leaflet.EasyButton"]
+	path = lib/Leaflet.EasyButton
+	url = https://github.com/CliffCloud/Leaflet.EasyButton.git

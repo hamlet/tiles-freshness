@@ -13,6 +13,8 @@
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <link rel="stylesheet" href="lib/leaflet-control-geocoder/Control.Geocoder.css" />
     <script src="lib/leaflet-control-geocoder/Control.Geocoder.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> 
+    <script src="lib/Leaflet.EasyButton/easy-button.js"></script>
     <script src="lib/leaflet-hash/leaflet-hash.js"></script>
     <script src="lib/leaflet-providers/leaflet-providers.js"></script>
     <script src="lib/leaflet-geoip/leaflet-geoip.js"></script>
@@ -24,9 +26,10 @@
     <script>
       var map = L.map('map');
       var hash = new L.Hash(map);
+      L.Control.geocoder({collapsed: false}).addTo(map);
+      L.easyButton("fa-github", function(){ window.open("https://github.com/hamlet/tiles-freshness")}, "Open in GitHub");
 
       var baseLayers = {
-        'Bing': new L.bingLayer("AuplXNWfv2r8wBiiFxD76a0vHWy6MEi3xARtk9oTiP-fC7LsEqEl5vE6qpjXiR2l", {maxZoom: 20}),
         'OpenStreetMap Default': L.tileLayer.provider('OpenStreetMap.Mapnik'),
         'OpenStreetMap French Style': L.tileLayer.provider('OpenStreetMap.France'),
         'OpenStreetMap German Style': L.tileLayer.provider('OpenStreetMap.DE'),
@@ -36,11 +39,12 @@
         'Thunderforest OpenCycleMap': L.tileLayer.provider('Thunderforest.OpenCycleMap'),
         'Thunderforest Landscape': L.tileLayer.provider('Thunderforest.Landscape'),
         // CORS   'Hydda Full': L.tileLayer.provider('Hydda.Full'),
+        'Bing': new L.bingLayer("AuplXNWfv2r8wBiiFxD76a0vHWy6MEi3xARtk9oTiP-fC7LsEqEl5vE6qpjXiR2l", {maxZoom: 20}),
       };
-      baseLayers['OpenStreetMap H.O.T.'].addTo(map);
       var overlayLayers = {
       };
       var layerControl = L.control.layers(baseLayers, overlayLayers, {collapsed: false}).addTo(map);
+      baseLayers['OpenStreetMap H.O.T.'].addTo(map);
       // resize layers control to fit into view.
       function resizeLayerControl() {
         var layerControlHeight = document.body.clientHeight - (10 + 50);
@@ -101,7 +105,6 @@
 
 
       map.setView(L.GeoIP.getPosition(),10);
-      L.Control.geocoder().addTo(map);
     </script>
   </body>
 </html>
