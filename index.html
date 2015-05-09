@@ -57,10 +57,19 @@
       // start the map in South-East England
       //map.setView(new L.LatLng(51.3, 0.7),9);
 
+      var DEBUG = 0;
+      function log(txt){
+        if (DEBUG > 0) {
+          console.log(txt);
+        }
+      }
+
       function display_date(tile, fresh_date) {
-        re = /<img src=".*?" (.*)>/;
+        log("display_date: " + fresh_date);
+        re = /<img(.*)src=".*?"(.*)>/;
         if ((m = re.exec(tile.outerHTML)) !== null) {
-          var span= "<p "+ m[1] + '><span style="background-color: white">' + fresh_date + "</span></p>";
+          var span= "<p "+ m[1] + m[2] + '><span style="background-color: white">' + fresh_date + "</span></p>";
+          log(span);
           tile.outerHTML += span;
         };
       }
@@ -68,6 +77,7 @@
       var dates_cache = {};
       function request_and_parse(tile, url, re) {
         if (dates_cache[url] !== undefined) {
+          log("cached: " + url);
           display_date(tile, dates_cache[url]);
         }
         else {
@@ -79,6 +89,7 @@
               var m;
               if ((m = re.exec(this.responseText)) !== null) {
                 if (dates_cache[url] == undefined) {
+                  log("caching: "+ url + " = " + m[1]);
                   dates_cache[url] = m[1];
                 }
                 display_date(tile, m[1]);
@@ -94,9 +105,11 @@
             //    console.log(e.tile.outerHTML); // e is an event object (MouseEvent in this case)
             // console.log("new " + e.url); 
             if (/virtualearth/.exec(e.url)) {
+              log("Bing");
               request_and_parse(e.tile, "http://ssh.mlet.me/tile-freshness/headers.php?url=" + e.url, /X-VE-TILEMETA-CaptureDatesRange: (\S+)\r/);
             }
             else {
+              log("OSM");
               request_and_parse(e.tile, e.url + "/status", /Last rendered at (\S+ \S+ \d+ \d+:\d+:\d+ \d+)/);
             }
           });
